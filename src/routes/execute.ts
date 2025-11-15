@@ -80,14 +80,13 @@ export function executeInfoHandler(req: X402Request, res: Response) {
   
   res.status(402).json({
     x402Version: 1,
-    error: 'Payment Required',
     accepts: [
       {
         scheme: 'exact',
         network: 'base',
         maxAmountRequired: (requiredAmount * 1_000_000).toString(),
         resource: '/api/execute',
-        description: 'Execute code in secure sandbox',
+        description: 'Execute JavaScript code in secure sandbox',
         mimeType: 'application/json',
         payTo: CONFIG.wallets.base,
         maxTimeoutSeconds: 60,
@@ -106,59 +105,16 @@ export function executeInfoHandler(req: X402Request, res: Response) {
               language: {
                 type: 'string',
                 required: true,
-                description: 'Programming language',
+                description: 'Programming language (javascript or python)',
                 enum: ['javascript', 'python'],
               },
               tier: {
                 type: 'string',
                 required: true,
-                description: 'Execution tier',
+                description: 'Execution tier (basic, standard, or premium)',
                 enum: ['basic', 'standard', 'premium'],
               },
-              timeout: {
-                type: 'number',
-                required: false,
-                description: 'Optional timeout in milliseconds',
-              },
             },
-          },
-          output: {
-            success: {
-              type: 'boolean',
-              description: 'Whether execution succeeded',
-            },
-            output: {
-              type: 'string',
-              description: 'Console output from code execution',
-            },
-            executionTime: {
-              type: 'number',
-              description: 'Time taken to execute in milliseconds',
-            },
-            memoryUsed: {
-              type: 'number',
-              description: 'Memory used in bytes',
-            },
-            proof: {
-              type: 'string',
-              description: 'Cryptographic proof of execution (SHA-256 hash)',
-            },
-            executionId: {
-              type: 'string',
-              description: 'Unique execution identifier',
-            },
-          },
-        },
-        extra: {
-          pricing: {
-            basic: 0.01,
-            standard: 0.02,
-            premium: 0.05,
-          },
-          wallets: {
-            base: CONFIG.wallets.base,
-            ethereum: CONFIG.wallets.ethereum,
-            solana: CONFIG.wallets.solana,
           },
         },
       },
