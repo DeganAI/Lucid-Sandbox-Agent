@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { x402Manager } from '../lib/x402-payments.js';
+import { x402Manager } from '../lib/x402-payment.js';
 import { CONFIG } from '../lib/config.js';
 
 export interface X402Request extends Request {
