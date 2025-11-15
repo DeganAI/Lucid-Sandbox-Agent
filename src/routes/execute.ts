@@ -91,6 +91,32 @@ export function executeInfoHandler(req: X402Request, res: Response) {
         payTo: CONFIG.wallets.base,
         maxTimeoutSeconds: 60,
         asset: CONFIG.network.usdcAddress,
+        outputSchema: {
+          input: {
+            type: 'http',
+            method: 'POST',
+            bodyType: 'json',
+            bodyFields: {
+              code: {
+                type: 'string',
+                required: true,
+                description: 'JavaScript code to execute',
+              },
+              language: {
+                type: 'string',
+                required: true,
+                description: 'Programming language',
+                enum: ['javascript', 'python'],
+              },
+              tier: {
+                type: 'string',
+                required: true,
+                description: 'Execution tier',
+                enum: ['basic', 'standard', 'premium'],
+              },
+            },
+          },
+        },
       },
     ],
   });
