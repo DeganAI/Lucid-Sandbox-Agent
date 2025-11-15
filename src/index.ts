@@ -1,10 +1,3 @@
-/**
- * Lucid Sandbox Agent - Main Server
- * 
- * Secure code execution with x402 micropayments
- * Built with Daydreams Lucid Agents framework
- */
-
 import express from 'express';
 import cors from 'cors';
 import { CONFIG } from './lib/config.js';
@@ -13,30 +6,18 @@ import { statusHandler } from './routes/status.js';
 import { executeHandler, executeInfoHandler } from './routes/execute.js';
 import { verifyHandler } from './routes/verify.js';
 
-/**
- * Initialize Express application
- */
 const app = express();
 
-/**
- * Middleware
- */
-app.use(cors()); // Enable CORS for all origins
-app.use(express.json()); // Parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-/**
- * Request logging middleware
- */
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] ${req.method} ${req.path}`);
   next();
 });
 
-/**
- * Root endpoint
- */
 app.get('/', (req, res) => {
   res.json({
     name: CONFIG.agent.name,
@@ -52,9 +33,6 @@ app.get('/', (req, res) => {
   });
 });
 
-/**
- * Health check endpoint
- */
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -63,33 +41,22 @@ app.get('/health', (req, res) => {
   });
 });
 
-/**
- * API Routes
- */
-
-// Status endpoint (free)
 app.get('/api/status', statusHandler);
-
-// Verify endpoint (free)
 app.get('/api/verify', verifyHandler);
 
-// Execute endpoint info (free)
+// GET /api/execute returns 402 with payment requirements (for x402scan)
 app.get('/api/execute', executeInfoHandler);
 
-// Execute endpoint with x402 payment (paid)
-// Payment middleware automatically handles 402 responses
+// POST /api/execute with payment middleware
 app.post(
   '/api/execute',
   requirePayment({
-    amount: CONFIG.pricing.standard, // Default to standard tier
+    amount: CONFIG.pricing.standard,
     description: 'Code execution in secure sandbox',
   }),
   executeHandler
 );
 
-/**
- * 404 handler
- */
 app.use((req, res) => {
   res.status(404).json({
     error: 'Not Found',
@@ -102,9 +69,6 @@ app.use((req, res) => {
   });
 });
 
-/**
- * Error handler
- */
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Server error:', err);
   res.status(500).json({
@@ -113,9 +77,6 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-/**
- * Start server
- */
 const PORT = CONFIG.server.port;
 
 app.listen(PORT, () => {
@@ -164,9 +125,6 @@ app.listen(PORT, () => {
   console.log(`🌐 Visit http://localhost:${PORT} to get started\n`);
 });
 
-/**
- * Graceful shutdown
- */
 process.on('SIGTERM', () => {
   console.log('\n🛑 SIGTERM received, shutting down gracefully...');
   process.exit(0);
