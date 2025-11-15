@@ -116,6 +116,24 @@ export function executeInfoHandler(req: X402Request, res: Response) {
               },
             },
           },
+          output: {
+            success: {
+              type: 'boolean',
+            },
+            output: {
+              type: 'string',
+            },
+            executionTime: {
+              type: 'number',
+            },
+          },
+        },
+        extra: {
+          pricing: {
+            basic: 0.01,
+            standard: 0.02,
+            premium: 0.05,
+          },
         },
       },
     ],
