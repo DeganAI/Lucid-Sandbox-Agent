@@ -12,9 +12,6 @@ import type { Request, Response, NextFunction } from 'express';
 import { x402Manager } from '../lib/x402-payment.js';
 import { CONFIG } from '../lib/config.js';
 
-/**
- * Extended Request with x402 payment data
- */
 export interface X402Request extends Request {
   x402Payment?: {
     verified: boolean;
@@ -24,42 +21,23 @@ export interface X402Request extends Request {
   };
 }
 
-/**
- * x402 Payment Middleware Configuration
- */
 export interface X402MiddlewareConfig {
-  amount: number; // Required payment amount in USDC
-  description: string; // Human-readable description
+  amount: number;
+  description: string;
 }
 
-/**
- * Create x402 payment middleware
- * 
- * Usage:
- * ```
- * app.post('/api/execute', 
- *   requirePayment({ amount: 0.02, description: 'Code execution' }),
- *   executeHandler
- * );
- * ```
- * 
- * @param config - Middleware configuration
- */
 export function requirePayment(config: X402MiddlewareConfig) {
   return async (req: X402Request, res: Response, next: NextFunction) => {
     try {
-      // 1. Check for X-PAYMENT header
       const paymentHeader = req.headers['x-payment'] as string | undefined;
 
       if (!paymentHeader) {
-        // No payment provided - return 402 Payment Required
         const paymentRequirement = x402Manager.createPaymentRequirement(
           config.amount,
           req.path,
           config.description
         );
 
-        // Set x402 response headers
         res.setHeader('X-Payment-Required', config.amount.toString());
         res.setHeader('X-Payment-Token', 'USDC');
         res.setHeader('X-Payment-Address', CONFIG.wallets.base);
@@ -72,7 +50,6 @@ export function requirePayment(config: X402MiddlewareConfig) {
         });
       }
 
-      // 2. Parse payment payload
       const paymentPayload = x402Manager.parsePaymentHeader(paymentHeader);
 
       if (!paymentPayload) {
@@ -82,7 +59,6 @@ export function requirePayment(config: X402MiddlewareConfig) {
         });
       }
 
-      // 3. Verify payment
       const verification = await x402Manager.verifyPayment(
         paymentPayload,
         config.amount
@@ -95,7 +71,6 @@ export function requirePayment(config: X402MiddlewareConfig) {
         });
       }
 
-      // 4. Payment verified! Attach to request and continue
       req.x402Payment = {
         verified: true,
         amount: config.amount,
@@ -103,7 +78,6 @@ export function requirePayment(config: X402MiddlewareConfig) {
         payer: paymentPayload.from,
       };
 
-      // Set payment confirmation header
       if (verification.transactionHash) {
         res.setHeader('X-Payment-Response', JSON.stringify({
           transactionHash: verification.transactionHash,
@@ -112,7 +86,6 @@ export function requirePayment(config: X402MiddlewareConfig) {
         }));
       }
 
-      // Continue to endpoint handler
       next();
 
     } catch (error) {
@@ -125,21 +98,12 @@ export function requirePayment(config: X402MiddlewareConfig) {
   };
 }
 
-/**
- * Optional payment middleware
- * 
- * Allows requests through even without payment,
- * but verifies payment if provided
- * 
- * Useful for endpoints with both free and paid tiers
- */
 export function optionalPayment(config: X402MiddlewareConfig) {
   return async (req: X402Request, res: Response, next: NextFunction) => {
     try {
       const paymentHeader = req.headers['x-payment'] as string | undefined;
 
       if (!paymentHeader) {
-        // No payment - continue but mark as unpaid
         req.x402Payment = {
           verified: false,
           amount: 0,
@@ -147,7 +111,6 @@ export function optionalPayment(config: X402MiddlewareConfig) {
         return next();
       }
 
-      // Payment provided - verify it
       const paymentPayload = x402Manager.parsePaymentHeader(paymentHeader);
 
       if (paymentPayload) {
@@ -174,7 +137,6 @@ export function optionalPayment(config: X402MiddlewareConfig) {
       next();
     } catch (error) {
       console.error('Optional payment middleware error:', error);
-      // Don't fail the request - just mark as unpaid
       req.x402Payment = {
         verified: false,
         amount: 0,
