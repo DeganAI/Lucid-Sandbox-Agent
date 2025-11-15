@@ -123,32 +123,29 @@ export function executeInfoHandler(req: X402Request, res: Response) {
             },
           },
           output: {
-            type: 'object',
-            properties: {
-              success: {
-                type: 'boolean',
-                description: 'Whether execution succeeded',
-              },
-              output: {
-                type: 'string',
-                description: 'Console output from code execution',
-              },
-              executionTime: {
-                type: 'number',
-                description: 'Time taken to execute in milliseconds',
-              },
-              memoryUsed: {
-                type: 'number',
-                description: 'Memory used in bytes',
-              },
-              proof: {
-                type: 'string',
-                description: 'Cryptographic proof of execution (SHA-256 hash)',
-              },
-              executionId: {
-                type: 'string',
-                description: 'Unique execution identifier',
-              },
+            success: {
+              type: 'boolean',
+              description: 'Whether execution succeeded',
+            },
+            output: {
+              type: 'string',
+              description: 'Console output from code execution',
+            },
+            executionTime: {
+              type: 'number',
+              description: 'Time taken to execute in milliseconds',
+            },
+            memoryUsed: {
+              type: 'number',
+              description: 'Memory used in bytes',
+            },
+            proof: {
+              type: 'string',
+              description: 'Cryptographic proof of execution (SHA-256 hash)',
+            },
+            executionId: {
+              type: 'string',
+              description: 'Unique execution identifier',
             },
           },
         },
