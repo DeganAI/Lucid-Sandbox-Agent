@@ -1,15 +1,5 @@
-/**
- * x402 Payment Middleware for Express
- * 
- * Automatically handles x402 payment flow:
- * 1. Intercepts requests to protected endpoints
- * 2. Returns 402 if no payment provided
- * 3. Verifies payment if provided
- * 4. Allows request to continue if payment valid
- */
-
 import type { Request, Response, NextFunction } from 'express';
-import { x402Manager } from '../lib/x402-payment.js';
+import { x402Manager } from '../lib/x402-payments.js';
 import { CONFIG } from '../lib/config.js';
 
 export interface X402Request extends Request {
@@ -29,24 +19,79 @@ export interface X402MiddlewareConfig {
 export function requirePayment(config: X402MiddlewareConfig) {
   return async (req: X402Request, res: Response, next: NextFunction) => {
     try {
+      // Only handle POST requests - let GET requests pass through
+      if (req.method !== 'POST') {
+        return next();
+      }
+
       const paymentHeader = req.headers['x-payment'] as string | undefined;
 
       if (!paymentHeader) {
-        const paymentRequirement = x402Manager.createPaymentRequirement(
-          config.amount,
-          req.path,
-          config.description
-        );
-
-        res.setHeader('X-Payment-Required', config.amount.toString());
-        res.setHeader('X-Payment-Token', 'USDC');
-        res.setHeader('X-Payment-Address', CONFIG.wallets.base);
-        res.setHeader('X-Payment-Network', CONFIG.network.name);
-
         return res.status(402).json({
+          x402Version: 1,
           error: 'Payment Required',
-          message: config.description,
-          paymentRequirement,
+          accepts: [
+            {
+              scheme: 'exact',
+              network: 'base',
+              maxAmountRequired: (config.amount * 1_000_000).toString(),
+              resource: req.path,
+              description: config.description,
+              mimeType: 'application/json',
+              payTo: CONFIG.wallets.base,
+              maxTimeoutSeconds: 60,
+              asset: CONFIG.network.usdcAddress,
+              outputSchema: {
+                input: {
+                  type: 'http',
+                  method: 'POST',
+                  bodyType: 'json',
+                  bodyFields: {
+                    code: {
+                      type: 'string',
+                      required: true,
+                      description: 'JavaScript code to execute',
+                    },
+                    language: {
+                      type: 'string',
+                      required: true,
+                      description: 'Programming language',
+                      enum: ['javascript', 'python'],
+                    },
+                    tier: {
+                      type: 'string',
+                      required: true,
+                      description: 'Execution tier',
+                      enum: ['basic', 'standard', 'premium'],
+                    },
+                    timeout: {
+                      type: 'number',
+                      required: false,
+                      description: 'Optional timeout in milliseconds',
+                    },
+                  },
+                },
+                output: {
+                  success: 'boolean',
+                  output: 'string',
+                  executionTime: 'number',
+                  proof: 'string',
+                },
+              },
+              extra: {
+                pricing: {
+                  basic: 0.01,
+                  standard: 0.02,
+                  premium: 0.05,
+                },
+                wallets: {
+                  base: CONFIG.wallets.base,
+                  ethereum: CONFIG.wallets.ethereum,
+                  solana: CONFIG.wallets.solana,
+                },
+              },
+            },
+          ],
         });
       }
 
