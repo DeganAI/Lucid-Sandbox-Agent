@@ -185,8 +185,10 @@ export class X402PaymentManager {
       if (!response.ok) {
         // Facilitator returned error
         const error = await response.json().catch(() => ({ error: 'Unknown facilitator error' }));
-        return { valid: false, error: error.error || 'Facilitator verification failed' };
-      }
+        return { 
+  valid: false, 
+  error: error instanceof Error ? error.message : 'Unknown error' 
+};
 
       const result = await response.json();
       
