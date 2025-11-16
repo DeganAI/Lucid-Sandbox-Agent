@@ -115,9 +115,18 @@ export function executeInfoHandler(req: X402Request, res: Response) {
             },
           },
           output: {
-            success: 'boolean',
-            output: 'string',
-            executionTime: 'number',
+            success: {
+              type: 'boolean',
+              description: 'Execution success status',
+            },
+            output: {
+              type: 'string',
+              description: 'Console output from execution',
+            },
+            executionTime: {
+              type: 'number',
+              description: 'Execution time in milliseconds',
+            },
           },
         },
       },
