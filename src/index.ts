@@ -35,64 +35,150 @@ app.get('/', (req, res) => {
   
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      max-width: 800px;
-      margin: 50px auto;
+      font-family: 'Courier New', monospace;
+      max-width: 900px;
+      margin: 0 auto;
       padding: 20px;
       line-height: 1.6;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      background: #0a0e27;
+      color: #00ff9f;
     }
     .container {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+      background: rgba(16, 20, 43, 0.95);
+      border: 2px solid #00ff9f;
+      border-radius: 8px;
       padding: 40px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 40px rgba(0, 255, 159, 0.3);
     }
-    h1 { margin-top: 0; font-size: 2.5em; }
-    h2 { margin-top: 30px; }
+    .llama {
+      font-size: 12px;
+      color: #00d4ff;
+      text-shadow: 0 0 10px #00d4ff;
+      white-space: pre;
+      margin: 20px 0;
+      text-align: center;
+    }
+    h1 { 
+      margin-top: 0; 
+      font-size: 2.5em;
+      color: #00ff9f;
+      text-shadow: 0 0 20px #00ff9f;
+    }
+    h2 { 
+      margin-top: 30px;
+      color: #00d4ff;
+      text-shadow: 0 0 10px #00d4ff;
+    }
     code {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 2px 6px;
+      background: rgba(0, 255, 159, 0.1);
+      padding: 2px 8px;
       border-radius: 4px;
       font-family: monospace;
+      color: #00ff9f;
+      border: 1px solid rgba(0, 255, 159, 0.3);
     }
-    a { color: #fff; text-decoration: underline; }
+    pre {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      border: 1px solid rgba(0, 255, 159, 0.2);
+    }
+    .endpoint {
+      background: rgba(0, 212, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      border-left: 4px solid #00d4ff;
+    }
+    .invoke-box {
+      background: rgba(138, 43, 226, 0.1);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 2px solid #8a2be2;
+    }
+    a { 
+      color: #00d4ff; 
+      text-decoration: none;
+      text-shadow: 0 0 5px #00d4ff;
+    }
+    a:hover { text-decoration: underline; }
     ul { line-height: 1.8; }
+    .glow { text-shadow: 0 0 10px #00ff9f; }
+    .price { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🚀 Lucid Sandbox Agent</h1>
+    <div class="llama">
+    ██╗     ██╗   ██╗ ██████╗██╗██████╗ 
+    ██║     ██║   ██║██╔════╝██║██╔══██╗
+    ██║     ██║   ██║██║     ██║██║  ██║
+    ██║     ██║   ██║██║     ██║██║  ██║
+    ███████╗╚██████╔╝╚██████╗██║██████╔╝
+    ╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═════╝ 
+    </div>
+    
+    <h1 class="glow">🦙 LUCID SANDBOX AGENT</h1>
     <p><strong>Secure JavaScript code execution with x402 micropayments</strong></p>
     
-    <h2>Features</h2>
+    <h2>⚡ Features</h2>
     <ul>
       <li>💰 Pay-per-execution with USDC on Base L2</li>
       <li>🔐 Isolated sandbox with memory & timeout limits</li>
       <li>⚡ Three pricing tiers: $0.01, $0.02, $0.05</li>
       <li>🔗 x402 protocol integration</li>
       <li>📊 Cryptographic execution proofs</li>
+      <li>🤖 AI agent compatible</li>
     </ul>
 
-    <h2>API Endpoint</h2>
-    <p><code>POST /api/execute</code></p>
+    <h2>🎯 Invoke Endpoint</h2>
+    <div class="invoke-box">
+      <p><strong>POST</strong> <code>https://lucid-sandbox-agent-production.up.railway.app/api/execute</code></p>
+      <p><strong>Request Body:</strong></p>
+      <pre><code>{
+  "code": "console.log('Hello from Lucid!')",
+  "language": "javascript",
+  "tier": "standard"
+}</code></pre>
+      <p><strong>Headers:</strong> <code>X-PAYMENT: [payment_signature]</code></p>
+    </div>
+
+    <h2>💎 API Endpoints</h2>
+    <div class="endpoint">
+      <strong>Execute Code (Paid)</strong><br>
+      <code>POST /api/execute</code>
+      <p>Requires x402 payment in request header</p>
+    </div>
     
-    <h2>Payment Details</h2>
-    <p>💳 Address: <code>0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83</code></p>
-    <p>⛓️ Network: Base L2 (Chain ID: 8453)</p>
-    <p>💵 Token: USDC</p>
+    <div class="endpoint">
+      <strong>Payment Info</strong><br>
+      <code>GET /api/execute</code>
+      <p>Returns 402 with payment requirements</p>
+    </div>
+
+    <div class="endpoint">
+      <strong>Status Check (Free)</strong><br>
+      <code>GET /api/status</code>
+      <p>Health check endpoint</p>
+    </div>
     
-    <h2>Pricing</h2>
+    <h2>💳 Payment Details</h2>
+    <p>Address: <code>0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83</code></p>
+    <p>Network: <code>Base L2 (Chain ID: 8453)</code></p>
+    <p>Token: <code>USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913)</code></p>
+    
+    <h2 class="price">💵 Pricing Tiers</h2>
     <ul>
-      <li><strong>Basic:</strong> $0.01 USDC (10s timeout, 64MB)</li>
-      <li><strong>Standard:</strong> $0.02 USDC (30s timeout, 128MB)</li>
-      <li><strong>Premium:</strong> $0.05 USDC (60s timeout, 256MB)</li>
+      <li><strong class="price">Basic:</strong> $0.01 USDC (10s timeout, 64MB)</li>
+      <li><strong class="price">Standard:</strong> $0.02 USDC (30s timeout, 128MB)</li>
+      <li><strong class="price">Premium:</strong> $0.05 USDC (60s timeout, 256MB)</li>
     </ul>
     
-    <p style="margin-top: 30px; opacity: 0.8;">
-      Powered by Daydreams Lucid Agents & x402 Protocol
+    <p style="margin-top: 40px; opacity: 0.7; text-align: center;">
+      🌟 Powered by Daydreams Lucid Agents & x402 Protocol 🌟<br>
+      <a href="https://x402scan.com" target="_blank">View on x402scan</a>
     </p>
   </div>
 </body>
