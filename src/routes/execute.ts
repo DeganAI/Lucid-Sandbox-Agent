@@ -76,7 +76,7 @@ export async function executeHandler(req: X402Request, res: Response) {
 }
 
 export function executeInfoHandler(req: X402Request, res: Response) {
-  const paymentRequirement = {
+  res.status(402).json({
     x402Version: 1,
     accepts: [
       {
@@ -102,10 +102,11 @@ export function executeInfoHandler(req: X402Request, res: Response) {
               },
             },
           },
+          output: {
+            result: 'string',
+          },
         },
       },
     ],
-  };
-
-  res.status(402).json(paymentRequirement);
+  });
 }
