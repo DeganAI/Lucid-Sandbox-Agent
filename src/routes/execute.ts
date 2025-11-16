@@ -76,21 +76,19 @@ export async function executeHandler(req: X402Request, res: Response) {
 }
 
 export function executeInfoHandler(req: X402Request, res: Response) {
-  const requiredAmount = CONFIG.pricing.standard;
-  
   res.status(402).json({
     x402Version: 1,
     accepts: [
       {
         scheme: 'exact',
         network: 'base',
-        maxAmountRequired: (requiredAmount * 1_000_000).toString(),
+        maxAmountRequired: '20000',
         resource: '/api/execute',
         description: 'Execute JavaScript code in secure sandbox',
         mimeType: 'application/json',
-        payTo: CONFIG.wallets.base,
+        payTo: '0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83',
         maxTimeoutSeconds: 60,
-        asset: CONFIG.network.usdcAddress,
+        asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
         outputSchema: {
           input: {
             type: 'http',
@@ -106,7 +104,7 @@ export function executeInfoHandler(req: X402Request, res: Response) {
                 type: 'string',
                 required: true,
                 description: 'Programming language',
-                enum: ['javascript', 'python'],
+                enum: ['javascript'],
               },
               tier: {
                 type: 'string',
@@ -117,22 +115,9 @@ export function executeInfoHandler(req: X402Request, res: Response) {
             },
           },
           output: {
-            success: {
-              type: 'boolean',
-            },
-            output: {
-              type: 'string',
-            },
-            executionTime: {
-              type: 'number',
-            },
-          },
-        },
-        extra: {
-          pricing: {
-            basic: 0.01,
-            standard: 0.02,
-            premium: 0.05,
+            success: 'boolean',
+            output: 'string',
+            executionTime: 'number',
           },
         },
       },
