@@ -76,37 +76,37 @@ export async function executeHandler(req: X402Request, res: Response) {
 }
 
 export function executeInfoHandler(req: X402Request, res: Response) {
-  res.status(402).json({
+  res.setHeader('Content-Type', 'application/json');
+  res.status(402);
+  res.send(JSON.stringify({
     x402Version: 1,
-    accepts: [
-      {
-        scheme: 'exact',
-        network: 'base',
-        maxAmountRequired: '20000',
-        resource: '/api/execute',
-        description: 'Execute JavaScript code in secure sandbox',
-        mimeType: 'application/json',
-        payTo: '0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83',
-        maxTimeoutSeconds: 60,
-        asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-        outputSchema: {
-          input: {
-            type: 'http',
-            method: 'POST',
-            bodyType: 'json',
-            bodyFields: {
-              code: {
-                type: 'string',
-                required: true,
-                description: 'JavaScript code to execute',
-              },
-            },
-          },
-          output: {
-            result: 'string',
-          },
+    accepts: [{
+      scheme: 'exact',
+      network: 'base',
+      maxAmountRequired: '20000',
+      resource: '/api/execute',
+      description: 'Execute JavaScript code in secure sandbox',
+      mimeType: 'application/json',
+      payTo: '0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83',
+      maxTimeoutSeconds: 60,
+      asset: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      outputSchema: {
+        input: {
+          type: 'http',
+          method: 'POST',
+          bodyType: 'json',
+          bodyFields: {
+            code: {
+              type: 'string',
+              required: true,
+              description: 'JavaScript code to execute'
+            }
+          }
         },
-      },
-    ],
-  });
+        output: {
+          result: 'string'
+        }
+      }
+    }]
+  }));
 }
