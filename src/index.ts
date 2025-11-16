@@ -19,18 +19,107 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({
-    name: CONFIG.agent.name,
-    version: CONFIG.agent.version,
-    description: CONFIG.agent.description,
-    status: 'online',
-    endpoints: {
-      status: 'GET /api/status',
-      execute: 'POST /api/execute',
-      verify: 'GET /api/verify',
-    },
-    documentation: 'https://github.com/YOUR_USERNAME/lucid-sandbox-agent',
-  });
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucid Sandbox Agent - x402 Code Execution</title>
+  
+  <!-- Open Graph tags for x402scan -->
+  <meta property="og:title" content="Lucid Sandbox Agent">
+  <meta property="og:description" content="Secure JavaScript code execution with x402 micropayments on Base L2">
+  <meta property="og:image" content="https://lucid-sandbox-agent-production.up.railway.app/og-image.png">
+  
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    h1 { margin-top: 0; font-size: 2.5em; }
+    h2 { margin-top: 30px; }
+    code {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    a { color: #fff; text-decoration: underline; }
+    ul { line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Lucid Sandbox Agent</h1>
+    <p><strong>Secure JavaScript code execution with x402 micropayments</strong></p>
+    
+    <h2>Features</h2>
+    <ul>
+      <li>💰 Pay-per-execution with USDC on Base L2</li>
+      <li>🔐 Isolated sandbox with memory & timeout limits</li>
+      <li>⚡ Three pricing tiers: $0.01, $0.02, $0.05</li>
+      <li>🔗 x402 protocol integration</li>
+      <li>📊 Cryptographic execution proofs</li>
+    </ul>
+
+    <h2>API Endpoint</h2>
+    <p><code>POST /api/execute</code></p>
+    
+    <h2>Payment Details</h2>
+    <p>💳 Address: <code>0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83</code></p>
+    <p>⛓️ Network: Base L2 (Chain ID: 8453)</p>
+    <p>💵 Token: USDC</p>
+    
+    <h2>Pricing</h2>
+    <ul>
+      <li><strong>Basic:</strong> $0.01 USDC (10s timeout, 64MB)</li>
+      <li><strong>Standard:</strong> $0.02 USDC (30s timeout, 128MB)</li>
+      <li><strong>Premium:</strong> $0.05 USDC (60s timeout, 256MB)</li>
+    </ul>
+    
+    <p style="margin-top: 30px; opacity: 0.8;">
+      Powered by Daydreams Lucid Agents & x402 Protocol
+    </p>
+  </div>
+</body>
+</html>`;
+
+  res.setHeader('Content-Type', 'text/html');
+  res.send(html);
+});
+
+app.get('/favicon.ico', (req, res) => {
+  // Simple 16x16 purple pixel favicon
+  const favicon = Buffer.from(
+    'AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+    'base64'
+  );
+  res.setHeader('Content-Type', 'image/x-icon');
+  res.send(favicon);
+});
+
+app.get('/og-image.png', (req, res) => {
+  // Simple 1200x630 purple gradient PNG for Open Graph
+  const ogImage = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==',
+    'base64'
+  );
+  res.setHeader('Content-Type', 'image/png');
+  res.send(ogImage);
 });
 
 app.get('/health', (req, res) => {
