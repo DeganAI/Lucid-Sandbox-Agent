@@ -76,9 +76,7 @@ export async function executeHandler(req: X402Request, res: Response) {
 }
 
 export function executeInfoHandler(req: X402Request, res: Response) {
-  res.setHeader('Content-Type', 'application/json');
-  res.status(402);
-  res.send(JSON.stringify({
+  res.status(402).json({
     x402Version: 1,
     accepts: [{
       scheme: 'exact',
@@ -104,9 +102,17 @@ export function executeInfoHandler(req: X402Request, res: Response) {
           }
         },
         output: {
-          result: 'string'
+          success: {
+            type: 'boolean'
+          },
+          output: {
+            type: 'string'
+          },
+          executionTime: {
+            type: 'number'
+          }
         }
       }
     }]
-  }));
+  });
 }
