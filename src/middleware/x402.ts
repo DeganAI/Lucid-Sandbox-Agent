@@ -19,79 +19,68 @@ export interface X402MiddlewareConfig {
 export function requirePayment(config: X402MiddlewareConfig) {
   return async (req: X402Request, res: Response, next: NextFunction) => {
     try {
-      // Only handle POST requests - let GET requests pass through
-      if (req.method !== 'POST') {
-        return next();
-      }
-
       const paymentHeader = req.headers['x-payment'] as string | undefined;
 
       if (!paymentHeader) {
+        // Return same 402 response as GET /api/execute
         return res.status(402).json({
           x402Version: 1,
-          error: 'Payment Required',
           accepts: [
             {
-              scheme: 'exact',
-              network: 'base',
-              maxAmountRequired: (config.amount * 1_000_000).toString(),
-              resource: req.path,
-              description: config.description,
-              mimeType: 'application/json',
-              payTo: CONFIG.wallets.base,
+              scheme: "exact",
+              network: "base",
+              maxAmountRequired: "20000",
+              resource: "https://lucid-sandbox-agent-production.up.railway.app/api/execute",
+              description: "Execute JavaScript code in secure sandbox",
+              mimeType: "application/json",
+              payTo: "0x11c24Fbcd702cd611729F8402d8fB51ECa75Ba83",
               maxTimeoutSeconds: 60,
-              asset: CONFIG.network.usdcAddress,
+              asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
               outputSchema: {
                 input: {
-                  type: 'http',
-                  method: 'POST',
-                  bodyType: 'json',
+                  type: "http",
+                  method: "POST",
+                  bodyType: "json",
                   bodyFields: {
                     code: {
-                      type: 'string',
+                      type: "string",
                       required: true,
-                      description: 'JavaScript code to execute',
+                      description: "JavaScript code to execute",
                     },
                     language: {
-                      type: 'string',
+                      type: "string",
                       required: true,
-                      description: 'Programming language',
-                      enum: ['javascript', 'python'],
+                      description: "Programming language",
+                      enum: ["javascript", "python"]
                     },
                     tier: {
-                      type: 'string',
+                      type: "string",
                       required: true,
-                      description: 'Execution tier',
-                      enum: ['basic', 'standard', 'premium'],
-                    },
-                    timeout: {
-                      type: 'number',
-                      required: false,
-                      description: 'Optional timeout in milliseconds',
-                    },
-                  },
+                      description: "Execution tier",
+                      enum: ["basic", "standard", "premium"]
+                    }
+                  }
                 },
                 output: {
-                  success: 'boolean',
-                  output: 'string',
-                  executionTime: 'number',
-                  proof: 'string',
-                },
-              },
-              extra: {
-                pricing: {
-                  basic: 0.01,
-                  standard: 0.02,
-                  premium: 0.05,
-                },
-                wallets: {
-                  base: CONFIG.wallets.base,
-                  ethereum: CONFIG.wallets.ethereum,
-                  solana: CONFIG.wallets.solana,
-                },
-              },
-            },
-          ],
+                  type: "object",
+                  properties: {
+                    success: { 
+                      type: "boolean",
+                      description: "Execution success status"
+                    },
+                    output: { 
+                      type: "string",
+                      description: "Console output"
+                    },
+                    executionTime: { 
+                      type: "number",
+                      description: "Execution time in ms"
+                    }
+                  }
+                }
+              }
+            }
+          ]
         });
       }
 
